@@ -20,6 +20,9 @@ function love.load()
     -- pixelate everything
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
+    -- set the title of application window
+    love.window.setTitle('Pong')
+
     -- get a random seed for random function
     math.randomseed(os.time())
 
@@ -51,7 +54,66 @@ end
 
 -- update function
 function love.update(dt)
-    -- player 1 paddle movement
+
+    -- play state
+    if gameState == 'play' then
+        -- check collision with player 1
+        if ball:collides(player1) then
+            -- change dx direction with a little increment
+            ball.dx = -ball.dx * 1.03
+            -- change the position of the ball to the position of the collision
+            ball.x = player1.x + 5
+
+            -- randomizing the velocity with preserving the direction
+            if ball.dy < 0 then
+                ball.dy = -math.random(10, 150)
+            else
+                ball.dy = math.random(10, 150)
+            end
+        end
+        -- check collision with player 1
+        if ball:collides(player2) then
+            -- change dx direction with a little increment
+            ball.dx = -ball.dx * 1.03
+            -- change the position of the ball to the position of the collision
+            ball.x = player2.x -4
+
+            -- randomizing the velocity with preserving the direction
+            if ball.dy < 0 then
+                ball.dy = -math.random(10, 150)
+            else
+                ball.dy = math.random(10, 150)
+            end
+        end
+
+        -- detect upper boundary of the screen and change the dy direction when collide
+        if ball.y <= 0 then
+            ball.y = 0
+            ball.dy = -ball.dy
+        end
+
+        -- detect lower boundary of the screen and change the dy direction when collide
+        if ball.y >= VIRTUAL_HEIGHT - 4 then
+            ball.y = VIRTUAL_HEIGHT - 4
+            ball.dy = -ball.dy
+        end
+
+        -- check for left boundary for a collision with the ball and increment player 2 score
+        if ball.x < 0 then
+            player2Score = player2Score + 1
+            ball:reset()
+            gameState = 'start'
+        end
+
+        -- check for right boundary for a collision with the ball and increment player 1 score
+        if ball.x > VIRTUAL_WIDTH then
+            player1Score = player1Score + 1
+            ball:reset()
+            gameState = 'start'
+        end
+    end
+
+    -- player 1 paddle movement direction
     if love.keyboard.isDown('w') then
         player1.dy = -PADDLE_SPEED
     elseif love.keyboard.isDown('s') then
@@ -60,7 +122,7 @@ function love.update(dt)
         player1.dy = 0
     end
 
-    -- player 2 paddle movement
+    -- player 2 paddle movement direction
     if love.keyboard.isDown('up') then
         player2.dy = -PADDLE_SPEED
     elseif love.keyboard.isDown('down') then
@@ -69,10 +131,12 @@ function love.update(dt)
         player2.dy = 0
     end
 
+    -- update ball
     if gameState == 'play' then
         ball:update(dt)
     end
 
+    -- update paddles
     player1:update(dt)
     player2:update(dt)
 end
