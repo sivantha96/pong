@@ -8,8 +8,8 @@ function Ball:init(x, y, width, height)
     self.height = height
 
     -- set initial velocity to random
-    self.dy = math.random(2) == 1 and -10 or 10
-    self.dx = math.random(-100, 100)
+    self.dy = math.random(2) == 1 and -100 or 100
+    self.dx = math.random(2) == 1 and math.random(-80, -100) or math.random(80, 100)
 end
 
 -- collision fnction
