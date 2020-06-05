@@ -115,16 +115,30 @@ function love.update(dt)
         if ball.x < 0 then
             servingPlayer = 1
             player2Score = player2Score + 1
-            ball:reset()
-            gameState = 'serve'
+
+            -- check for a winner
+            if player2Score == 10 then
+                winningPlayer = 2
+                gameState = 'done'
+            else
+                gameState = 'serve'
+                ball:reset()
+            end
         end
 
         -- check for right boundary for a collision with the ball and increment player 1 score
         if ball.x > VIRTUAL_WIDTH then
             servingPlayer = 2
             player1Score = player1Score + 1
-            ball:reset()
-            gameState = 'serve'
+
+            -- check for a winner
+            if player1Score == 10 then
+                winningPlayer = 1
+                gameState = 'done'
+            else
+                gameState = 'serve'
+                ball:reset()
+            end
         end
     end
 
@@ -168,6 +182,20 @@ function love.keypressed(key)
         elseif gameState == 'serve' then
             -- reset game when enter pressed while in the play state
             gameState = 'play'
+        elseif gameState == 'done' then
+            -- reset game when enter pressed while in the play state
+            gameState = 'serve'
+
+            -- reset the game
+            ball:reset()
+            player1Score = 0
+            player2Score = 0
+            if winningPlayer == 1 then
+                servingPlayer = 2
+            else
+                servingPlayer = 1
+            end
+
         end
     end
 end
@@ -180,12 +208,18 @@ function love.draw()
     love.graphics.clear()
 
     -- main text
-    love.graphics.setFont(smallFont)
+    
     if gameState == 'start' then
+        love.graphics.setFont(smallFont)
         love.graphics.printf('Welcome to Pong!', 0, 20, VIRTUAL_WIDTH,'center')
     elseif gameState == 'serve' then
+        love.graphics.setFont(smallFont)
         love.graphics.printf('Press Enter to serve the ball!', 0, 20, VIRTUAL_WIDTH,'center')
-    else
+    elseif gameState == 'done' then
+        love.graphics.setFont(largeFont)
+        love.graphics.printf('Player ' .. tostring(winningPlayer) .. ' wins!', 0, 10, VIRTUAL_WIDTH,'center')
+        love.graphics.setFont(smallFont)
+        love.graphics.printf('Press Enter to restart', 0, 50, VIRTUAL_WIDTH,'center')
         -- no message
     end
     
