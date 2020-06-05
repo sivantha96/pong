@@ -40,6 +40,13 @@ function love.load()
         vsync = true
     })
 
+    -- setup the sounds
+    sounds = {
+        ['paddle_hit'] = love.audio.newSource('sounds/paddle_hit.wav', 'static'),
+        ['score'] = love.audio.newSource('sounds/score.wav', 'static'),
+        ['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static')
+    }
+
     -- scores
     player1Score = 0
     player2Score = 0
@@ -72,6 +79,8 @@ function love.update(dt)
     elseif gameState == 'play' then
         -- check collision with player 1
         if ball:collides(player1) then
+            -- play a sound
+            sounds['paddle_hit']:play()
             -- change dx direction with a little increment
             ball.dx = -ball.dx * 1.03
             -- change the position of the ball to the position of the collision
@@ -86,6 +95,8 @@ function love.update(dt)
         end
         -- check collision with player 1
         if ball:collides(player2) then
+            -- play a sound
+            sounds['paddle_hit']:play()
             -- change dx direction with a little increment
             ball.dx = -ball.dx * 1.03
             -- change the position of the ball to the position of the collision
@@ -101,12 +112,18 @@ function love.update(dt)
 
         -- detect upper boundary of the screen and change the dy direction when collide
         if ball.y <= 0 then
+            -- play a sound
+            sounds['wall_hit']:play()
+
             ball.y = 0
             ball.dy = -ball.dy
         end
 
         -- detect lower boundary of the screen and change the dy direction when collide
         if ball.y >= VIRTUAL_HEIGHT - 4 then
+            -- play a sound
+            sounds['wall_hit']:play()
+
             ball.y = VIRTUAL_HEIGHT - 4
             ball.dy = -ball.dy
         end
@@ -115,6 +132,7 @@ function love.update(dt)
         if ball.x < 0 then
             servingPlayer = 1
             player2Score = player2Score + 1
+            sounds['score']:play()
 
             -- check for a winner
             if player2Score == 10 then
@@ -130,7 +148,8 @@ function love.update(dt)
         if ball.x > VIRTUAL_WIDTH then
             servingPlayer = 2
             player1Score = player1Score + 1
-
+            sounds['score']:play()
+            
             -- check for a winner
             if player1Score == 10 then
                 winningPlayer = 1
