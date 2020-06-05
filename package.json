@@ -1,0 +1,19 @@
+{
+  "name": "pong",
+  "version": "1.0.0",
+  "description": "A simple 2D game",
+  "main": "main.lua",
+  "scripts": {
+    "test": "love ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sivantha96/pong.git"
+  },
+  "author": "Sivantha Madusha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sivantha96/pong/issues"
+  },
+  "homepage": "https://github.com/sivantha96/pong#readme"
+}
